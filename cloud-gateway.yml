@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-gateway-app
+  labels:
+    app: cloud-gateway-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-gateway-app
+  template:
+    metadata:
+      labels:
+        app: cloud-gateway-app
+    spec:
+      containers:
+        - name: cloud-gateway-app
+          image: dailycodebuffer/cloud-gateway:0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9191
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloud-gateway-svc
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 9191
+      protocol: TCP
+  selector:
+    app: cloud-gateway-app
